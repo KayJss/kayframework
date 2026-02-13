@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kayframework"
-version = "0.2.0"
+version = "0.2.1"
 description = "A scaffold-first FastAPI micro-framework with a module-oriented CLI"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "Proprietary" }
+license = "MIT"
 authors = [{ name = "kayjs" }]
 keywords = ["fastapi", "framework", "cli", "scaffold", "microframework"]
 classifiers = [
@@ -18,7 +18,6 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Framework :: FastAPI",
   "Intended Audience :: Developers",
-  "License :: Other/Proprietary License",
   "Operating System :: OS Independent",
 ]
 
