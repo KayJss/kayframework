@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}KAYFRAMEWORK{% endblock %}</title>
+    <style>
+      :root {
+        --bg: #f6f7fb;
+        --card: #ffffff;
+        --text: #111827;
+        --muted: #6b7280;
+        --primary: #1f2937;
+        --accent: #2563eb;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); }
+      header { background: var(--card); border-bottom: 1px solid #e5e7eb; }
+      .container { max-width: 980px; margin: 0 auto; padding: 16px 20px; }
+      nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+      .brand { font-weight: 700; letter-spacing: 0.4px; }
+      .nav-links { display: flex; gap: 12px; }
+      a { color: var(--primary); text-decoration: none; font-weight: 600; }
+      a:hover { color: var(--accent); }
+      main { padding: 24px 0 40px; }
+      .card { background: var(--card); border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; box-shadow: 0 10px 24px rgba(0,0,0,0.06); }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav>
+          <div class="brand">KAYFRAMEWORK</div>
+          <div class="nav-links">
+            {% if user %}
+              <a href="/auth/profile">Profil</a>
+              <a href="/auth/logout">Çıkış</a>
+            {% else %}
+              <a href="/auth/login">Giriş</a>
+            {% endif %}
+          </div>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+  </body>
+</html>

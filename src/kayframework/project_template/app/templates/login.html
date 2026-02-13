@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Giriş | KAYFRAMEWORK{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h1>Giriş</h1>
+    <p>Hesabınızla oturum açın.</p>
+    <form id="login-form">
+      <label>
+        Email
+        <input type="email" name="email" required />
+      </label>
+      <br />
+      <label>
+        Şifre
+        <input type="password" name="password" required minlength="8" />
+      </label>
+      <br />
+      <button type="submit">Giriş Yap</button>
+    </form>
+    <p id="login-error" style="color: #b91c1c; margin-top: 12px;"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("login-form");
+    const errorEl = document.getElementById("login-error");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      errorEl.textContent = "";
+
+      const formData = new FormData(form);
+      const payload = {
+        email: formData.get("email"),
+        password: formData.get("password"),
+      };
+
+      const response = await fetch("/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "text/html",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        window.location.href = "/auth/profile";
+        return;
+      }
+
+      let detail = "Giriş başarısız.";
+      try {
+        const data = await response.json();
+        if (data && data.detail) detail = data.detail;
+      } catch (err) {
+        // ignore json parsing errors
+      }
+      errorEl.textContent = detail;
+    });
+  </script>
+{% endblock %}

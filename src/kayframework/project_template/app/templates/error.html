@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hata</title>
+    <style>
+      body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: #f5f6f8; color: #1f2937; }
+      .wrap { max-width: 720px; margin: 10vh auto; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+      h1 { margin: 0 0 8px; font-size: 24px; }
+      p { margin: 0; font-size: 16px; color: #4b5563; }
+      .code { margin-top: 12px; font-size: 14px; color: #6b7280; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Hata {{ status_code }}</h1>
+      <p>{{ detail }}</p>
+      <div class="code">KAYFRAMEWORK</div>
+    </div>
+  </body>
+</html>
