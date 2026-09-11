@@ -1,6 +1,23 @@
+import re
 import shutil
 from importlib import resources
 from pathlib import Path
+
+
+_PROJECT_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
+
+
+def _normalize_package_name(project_name: str) -> str:
+    return project_name.strip().lower().replace("_", "-").replace(" ", "-")
+
+
+def _validate_project_name(project_name: str) -> str | None:
+    value = project_name.strip()
+    if not value:
+        return "project name cannot be empty"
+    if value in {".", ".."} or not _PROJECT_NAME_RE.fullmatch(value):
+        return "project name may contain only letters, numbers, dots, underscores and hyphens"
+    return None
 
 
 def copy_project_template(target_dir: Path) -> None:
@@ -15,7 +32,7 @@ def copy_project_template(target_dir: Path) -> None:
 
 
 def write_generated_files(project_name: str, target_dir: Path) -> None:
-    package_name = project_name.lower().replace(" ", "-")
+    package_name = _normalize_package_name(project_name)
 
     (target_dir / "README.md").write_text(
         "\n".join(
@@ -26,6 +43,7 @@ def write_generated_files(project_name: str, target_dir: Path) -> None:
                 "",
                 "## Quickstart",
                 "```bash",
+                "python -m venv .venv",
                 "pip install -e .",
                 "uvicorn app.main:app --reload",
                 "```",
@@ -77,11 +95,21 @@ def write_generated_files(project_name: str, target_dir: Path) -> None:
 
 
 def create_project(project_name: str, base_dir: Path) -> tuple[int, str]:
-    target_dir = base_dir / project_name
+    validation_error = _validate_project_name(project_name)
+    if validation_error:
+        return 2, validation_error
+
+    clean_name = project_name.strip()
+    target_dir = base_dir / clean_name
     if target_dir.exists():
         return 2, f"target directory already exists: {target_dir}"
 
     target_dir.mkdir(parents=True, exist_ok=False)
-    copy_project_template(target_dir)
-    write_generated_files(project_name, target_dir)
+    try:
+        copy_project_template(target_dir)
+        write_generated_files(clean_name, target_dir)
+    except Exception:
+        shutil.rmtree(target_dir, ignore_errors=True)
+        raise
+
     return 0, f"Project created: {target_dir}"
