@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from app.api.router import api_router
 from app.api.errors import register_exception_handlers
 from app.core.config import settings
+from app.core.plugins import register_plugins
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
@@ -13,11 +14,14 @@ logging.basicConfig(
 
 app = FastAPI(title="KAYFRAMEWORK API")
 
+register_plugins(app)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 app.include_router(api_router)
 register_exception_handlers(app)
+
+
 @app.get("/")
 def home(request: Request):
     accept = request.headers.get("accept", "")
