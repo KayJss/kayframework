@@ -6,6 +6,7 @@ from pathlib import Path
 from kayframework import __version__
 from kayframework.core.scaffold import create_project
 from kayframework.modules.scaffold import create_module
+from kayframework.plugins.scaffold import install_plugin
 from kayframework.utils.process import run_command
 
 
@@ -18,6 +19,13 @@ def _cmd_new_app(args: argparse.Namespace) -> int:
 
 def _cmd_new_module(args: argparse.Namespace) -> int:
     code, message = create_module(args.name, Path(args.app_dir))
+    stream = sys.stderr if code else sys.stdout
+    print(message, file=stream)
+    return code
+
+
+def _cmd_add_plugin(args: argparse.Namespace) -> int:
+    code, message = install_plugin(args.name, Path(args.app_dir))
     stream = sys.stderr if code else sys.stdout
     print(message, file=stream)
     return code
@@ -72,11 +80,12 @@ def _cmd_init(args: argparse.Namespace) -> int:
     target = Path(args.dir)
     env_example = target / ".env.example"
     env_file = target / ".env"
+    default_env = "ENV=local\nLOG_LEVEL=INFO\nMODULES=\nPLUGINS=\n"
 
     if not env_example.exists():
-        env_example.write_text("ENV=local\nLOG_LEVEL=INFO\nMODULES=\n", encoding="utf-8")
+        env_example.write_text(default_env, encoding="utf-8")
     if not env_file.exists():
-        env_file.write_text("ENV=local\nLOG_LEVEL=INFO\nMODULES=\n", encoding="utf-8")
+        env_file.write_text(default_env, encoding="utf-8")
 
     print(f"Initialized env files in: {target}")
     return 0
@@ -129,6 +138,13 @@ def build_parser() -> argparse.ArgumentParser:
     new_module.add_argument("name", help="Module name (Python identifier)")
     new_module.add_argument("--app-dir", default="app", help="App directory (default: app)")
     new_module.set_defaults(handler=_cmd_new_module)
+
+    add_parser = sub.add_parser("add", help="Install project extensions")
+    add_sub = add_parser.add_subparsers(dest="add_command")
+    add_plugin = add_sub.add_parser("plugin", help="Install a built-in plugin")
+    add_plugin.add_argument("name", help="Plugin name, e.g. cors")
+    add_plugin.add_argument("--app-dir", default="app", help="App directory (default: app)")
+    add_plugin.set_defaults(handler=_cmd_add_plugin)
 
     run = sub.add_parser("run", help="Run app with uvicorn")
     run.add_argument("--app", default="app.main:app", help="ASGI app path")
