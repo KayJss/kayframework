@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     ENV: str = "local"
     LOG_LEVEL: str = "INFO"
     MODULES: str = ""
+    PLUGINS: str = ""
+    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:5173"
 
     COOKIE_NAME: str = "access_token"
     CSRF_COOKIE_NAME: str = "csrf_token"
