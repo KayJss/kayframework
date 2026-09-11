@@ -47,6 +47,10 @@ def write_generated_files(project_name: str, target_dir: Path) -> None:
                 "pip install -e .",
                 "uvicorn app.main:app --reload",
                 "```",
+                "",
+                "## Plugins",
+                "Install built-in extensions with `kay add plugin <name>`.",
+                "Example: `kay add plugin cors`.",
             ]
         )
         + "\n",
@@ -72,7 +76,16 @@ def write_generated_files(project_name: str, target_dir: Path) -> None:
     )
 
     (target_dir / ".env.example").write_text(
-        "\n".join(["ENV=local", "LOG_LEVEL=INFO", "MODULES="]) + "\n",
+        "\n".join(
+            [
+                "ENV=local",
+                "LOG_LEVEL=INFO",
+                "MODULES=",
+                "PLUGINS=",
+                "CORS_ORIGINS=http://localhost:3000,http://localhost:5173",
+            ]
+        )
+        + "\n",
         encoding="utf-8",
     )
 
